@@ -19,7 +19,7 @@ var _ = Describe("SQM", func() {
 			mon, err := sqm.New(cfg)
 			Expect(mon).To(BeNil())
 			Expect(err).ToNot(BeNil())
-			Expect(err.Error()).To(Equal("[SQM] one of http or serial should be set in the config"))
+			Expect(err.Error()).To(Equal("tcp configuration required"))
 		})
 
 		It("should create a network interface", func() {
@@ -37,24 +37,5 @@ var _ = Describe("SQM", func() {
 			Expect(ok).To(BeTrue())
 		})
 
-		It("should create a serial interface", func() {
-			cfg := &sqm.Config{
-				Serial: &sqm.Serial{
-					Port: PointIt("/dev/tty/usb1.1"),
-				},
-			}
-
-			mon, err := sqm.New(cfg)
-			Expect(err).To(BeNil())
-			_, ok := mon.(*sqm.Usb)
-
-			Expect(ok).To(BeTrue())
-		})
-	})
-
-	Context("Network", func() {
-		It("should do something", func() {
-			Expect(true).To(BeTrue())
-		})
 	})
 })

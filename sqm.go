@@ -1,22 +1,21 @@
 package sqm
 
-// r,-09.42m,0000005915Hz,0000000000c,0000000.000s, 027.0C
-type Reading struct{}
-
+// Monitor interface
+//
+// There are a types of Sky Quality meters.
+//
+//  1. SQM-LU USB/Serial - Supported with "Usb"
+//  2. SQML-LU-DL Not supported yet
+//  3. SQM-LE Ethernet - Supported with "Network"
+//  4. SQM-LR RS232 - Not supported yet
 type Monitor interface {
-	Read(cfg *Config) error
-}
+	Dial() error
+	Send(command Command) error
 
-type Usb struct{}
-
-func (u *Usb) Read(cfg *Config) error {
-	return nil
-}
-
-type Network struct{}
-
-func (n *Network) Read(cfg *Config) error {
-	return nil
+	// Read a response from the SQM.
+	// Note: implementors should close the connection
+	// after reading.
+	Read(item Readable) error
 }
 
 // Creates a new instance of Monitor
@@ -26,9 +25,7 @@ func New(cfg *Config) (Monitor, error) {
 		return nil, err
 	}
 
-	if cfg.Tcp != nil {
-		return &Network{}, nil
-	}
-
-	return &Usb{}, nil
+	// Add support for other
+	// connection types in the future
+	return &Network{cfg: cfg}, nil
 }

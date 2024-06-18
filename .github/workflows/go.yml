@@ -33,7 +33,7 @@ jobs:
     - name: install ginkgo
       run: go install github.com/onsi/ginkgo/ginkgo@latest
     - run: go vet ./...
-    - run: ginkgo --cover .
+    - run: ginkgo -r --cover .
     - run: ls -lha 
     - run: pwd
     - name: Analyze with SonarCloud

@@ -8,13 +8,27 @@ import (
 )
 
 var _ = Describe("Config", func() {
+
+	It("should return an empty string when host and port are not set", func() {
+		c := sqm.Tcp{}
+		Expect(c.Addr()).To(Equal(""))
+	})
+
+	It("should return an empty string when host and port are not set", func() {
+		c := sqm.Tcp{
+			Host: PointIt("localhost"),
+			Port: PointIt("8080"),
+		}
+		Expect(c.Addr()).To(Equal("localhost:8080"))
+	})
+
 	Context("Validate", func() {
 		It("should require a valid config", func() {
 			c := &sqm.Config{}
 			err := c.Validate()
 			Expect(err).ToNot(BeNil())
 			Expect(err.Error()).
-				To(Equal("[SQM] one of http or serial should be set in the config"))
+				To(Equal("tcp configuration required"))
 		})
 
 		It("should require fields for TCP connection", func() {
@@ -48,21 +62,6 @@ var _ = Describe("Config", func() {
 					Expect(err).ToNot(BeNil())
 				}
 			}
-		})
-
-		It("should require fields for Serial connection", func() {
-			c := sqm.Config{
-				Serial: &sqm.Serial{
-					// Port: PointIt("1200"),
-				},
-			}
-			err := c.Validate()
-			Expect(err).ToNot(BeNil())
-
-			c.Serial.Port = PointIt("1200")
-
-			err = c.Validate()
-			Expect(err).To(BeNil())
 		})
 	})
 })
