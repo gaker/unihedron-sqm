@@ -1,6 +1,6 @@
 module github.com/gaker/unihedron-sqm
 
-go 1.22.4
+go 1.22.0
 
 require github.com/onsi/gomega v1.33.1
 
