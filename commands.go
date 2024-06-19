@@ -17,6 +17,12 @@ const (
 	CmdReset             Command = "0x19"
 )
 
+var ErrInvalidLength = errors.New("invalid length")
+
+func InvalidStartPositionErr(start string) error {
+	return fmt.Errorf("invalid reading. '%s' start position not valid", start)
+}
+
 // Readable interface is used when reading responses
 type Readable interface {
 	Parse(in []byte) error
@@ -96,11 +102,11 @@ type Reading struct {
 // Parse implements the Readable interface
 func (r *Reading) Parse(in []byte) error {
 	if len(in) != 57 {
-		return errors.New("invalid length")
+		return ErrInvalidLength
 	}
 
 	if ok := validStartChar(in[0], []byte{'r', 'u'}); !ok {
-		return fmt.Errorf("invalid reading. '%s' start position not valid", string(in[0]))
+		return InvalidStartPositionErr(string(in[0]))
 	}
 
 	r.Reading = convertNumber[float64](in[2:7])
@@ -141,11 +147,11 @@ type UnitInfo struct {
 // Parse implements the Readable interface
 func (ui *UnitInfo) Parse(in []byte) error {
 	if len(in) != 39 {
-		return errors.New("invalid length")
+		return ErrInvalidLength
 	}
 
 	if ok := validStartChar(in[0], []byte{'i'}); !ok {
-		return fmt.Errorf("invalid reading. '%s' start position not valid", string(in[0]))
+		return InvalidStartPositionErr(string(in[0]))
 	}
 
 	ui.Protocol = convertNumber[int](in[2:10])
@@ -172,11 +178,11 @@ type CalibrationInfo struct {
 // Parse implements the Readable interface
 func (ci *CalibrationInfo) Parse(in []byte) error {
 	if len(in) != 58 {
-		return errors.New("invalid length")
+		return ErrInvalidLength
 	}
 
 	if ok := validStartChar(in[0], []byte{'c'}); !ok {
-		return fmt.Errorf("invalid reading. '%s' start position not valid", string(in[0]))
+		return InvalidStartPositionErr(string(in[0]))
 	}
 
 	ci.LightCalibrationOffset = convertNumber[float64](in[2:13])
