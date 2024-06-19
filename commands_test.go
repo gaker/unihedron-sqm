@@ -55,6 +55,20 @@ var _ = Describe("Commands", func() {
 				Expect(reading.Temp).To(Equal(27.1))
 			})
 
+			It("should handle a reading that also contains the serial number", func() {
+				reading := &sqm.Reading{}
+				err := reading.Parse([]byte("r,-09.42m,0000005915Hz,1000100000c,0006000.001s, 027.1C,00000413\r\n"))
+
+				Expect(err).To(BeNil())
+
+				Expect(reading.Averaged).To(BeTrue())
+				Expect(reading.Reading).To(Equal(-9.4))
+				Expect(reading.Frequency).To(Equal(5915))
+				Expect(reading.Counts).To(Equal(1000100000))
+				Expect(reading.Millis).To(Equal(6000.001))
+				Expect(reading.Temp).To(Equal(27.1))
+			})
+
 			It("should parse the unaveraged reading", func() {
 				reading := &sqm.Reading{}
 				err := reading.Parse([]byte("u,-09.42m,0000005915Hz,1000100000c,0006000.001s, 027.1C\r\n"))

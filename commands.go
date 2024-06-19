@@ -53,9 +53,9 @@ func convertNumber[T int | float64](in []byte) T {
 
 // validStartChar validates the starting character
 // read from the unit
-func validStartChar(_in byte, choices []byte) bool {
+func validStartChar(in byte, choices []byte) bool {
 	for _, x := range choices {
-		if _in == x {
+		if in == x {
 			return true
 		}
 	}
@@ -101,7 +101,10 @@ type Reading struct {
 
 // Parse implements the Readable interface
 func (r *Reading) Parse(in []byte) error {
-	if len(in) != 57 {
+	if len(in) != 57 && len(in) != 66 {
+		// it can possibly have a serial number on
+		// the response as well. For the time being
+		// I'm ignoring that.
 		return ErrInvalidLength
 	}
 
